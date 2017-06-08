@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>jsScreenShots</title>
+    <style media="screen">
+      * {
+        margin: 0;
+        padding: 0;
+      }
+      .copy-body {
+        position: fixed;
+        top: 0;
+        left: 0;
+        background-color: #ffffff;
+        z-index:1
+      }
+      #canvasPage {
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 2;
+        /*background-color: #cccccc;*/
+      }
+      #canvasWrapperId {
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 3;
+      }
+      #shot {
+        display: inline-block;
+        padding: 5px 15px;
+        border: 1px solid #cccccc;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>qwsnqw</h1>
+    <h2>q</h2>
+    <h3>sdsdsv</h3>
+    <h4>qwqwqw</h4>
+    <span id="shot">截图</span>
+  </body>
+<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://cdn.bootcss.com/jcanvas/16.7.3/jcanvas.min.js"></script>
+<script type="text/javascript" src="./html2canvas.js"></script>
+<script type="text/javascript">
+$('#shot').click(function() {
+  $('body').css('cursor', 'crosshair')
+  html2canvas(document.body, {
+    onrendered: function(canvas) {
+      document.body.appendChild(canvas)
+      this._calculateXY = function(e) {
+        return {
+          x: e.clientX,
+          y: e.clientY
+        }
+      }
+      var that = this
+      var startX = 0
+      var startY = 0
+      var isShot = false
+      var layerName = 'name' + Math.random() //图层名字，每次删除上一图层
+      var bGcolor = 'rgba(0, 0, 0, 0.3)' //图层颜色
+      var color = 'red' //图层颜色
+      var penWidth = 1
+      var canvasId = 'canvasPage'
+      var canvasWrapperId = 'canvasWrapperId' //最后确定框图
+      $('body').append('<canvas id='+ canvasId+' width='+ canvas.width +' height='+ canvas.height +'></canvas>') //添加图层用来画选择框
+      $(canvas).addClass('copy-body') //html转化来的canvas图片作为背景
+      $('#' + canvasId).mousedown(function(e) {
+        layerName += 1
+        startX = that._calculateXY(e).x
+        startY = that._calculateXY(e).y
+        isShot = true
+        $("#"+canvasId).addLayer({
+                   type: 'rectangle',
+                   strokeStyle: color,
+                   strokeWidth: penWidth,
+                   fillStyle: bGcolor,
+                    name:layerName,
+                    fromCenter: false,
+                    x: startX,
+                    y: startY,
+                    width: 1,
+                    height: 1
+        })
+      }).mousemove(function(e) {
+        if(isShot) {
+          $("#"+canvasId).removeLayer(layerName)
+          var moveX = that._calculateXY(e).x
+          var moveY = that._calculateXY(e).y
+          var width = moveX - startX
+          var height = moveY - startY
+          $("#"+canvasId).addLayer({
+                          type: 'rectangle',
+                          strokeStyle: color,
+                          strokeWidth: penWidth,
+                          fillStyle: bGcolor,
+                          name:layerName,
+                          fromCenter: false,
+                          x: startX,
+                          y: startY,
+                          width: width,
+                          height: height
+                      })
+          $("#"+canvasId).drawLayers();
+        }
+
+      }).mouseup(function(e) {
+        var moveX = that._calculateXY(e).x
+        var moveY = that._calculateXY(e).y
+        var width = moveX - startX
+        var height = moveY - startY
+        isShot = false
+      })
+    }
+  })
+})
+
+</script>
+</html>
