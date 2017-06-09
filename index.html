@@ -50,7 +50,11 @@
     </style>
   </head>
   <body>
-    <h1>qwsnqw</h1>
+    <h1>qwsnqwascascascascascas</h1>
+    <h2>q</h2>
+    <h3>sdsdsv</h3>
+    <h4>qwqwqwascacascas</h4>
+    <h1>qwsnqwascascas</h1>
     <h2>q</h2>
     <h3>sdsdsv</h3>
     <h4>qwqwqw</h4>
@@ -135,6 +139,12 @@ $('#shot').click(function() {
           'left': moveX - 64
         })
         $('.ok').click(function() {
+          $('body').append('<canvas id="canvasResult" width='+ width +' height='+ height +'></canvas>') //添加图层用来画选择框
+          var canvasResult = document.getElementById('canvasResult')
+          var ctx = canvasResult.getContext("2d");
+          ctx.drawImage(canvas, startX, startY, width, height, 0, 0, width, height )
+          var dataURL = canvasResult.toDataURL();
+          console.log(dataURL);
           $(canvas).remove()
           $("#"+canvasId).remove()
           $('.result').remove()
