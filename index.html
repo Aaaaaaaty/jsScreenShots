@@ -35,6 +35,18 @@
         border-radius: 5px;
         cursor: pointer;
       }
+      .result {
+        position: fixed;
+        z-index: 4;
+        cursor: pointer;
+      }
+      .result span {
+        padding: 5px 15px;
+        border: 1px solid;
+        border-radius: 12px;
+        margin-right: 5px;
+        font-size: 12px;
+      }
     </style>
   </head>
   <body>
@@ -64,30 +76,32 @@ $('#shot').click(function() {
       var startY = 0
       var isShot = false
       var layerName = 'name' + Math.random() //图层名字，每次删除上一图层
-      var bGcolor = 'rgba(0, 0, 0, 0.3)' //图层颜色
-      var color = 'red' //图层颜色
+      var bGcolor = 'rgba(0, 0, 0, 0.1)' //图层颜色
+      var color = 'rgba(0, 0, 0, 0.1)' //边框颜色
       var penWidth = 1
       var canvasId = 'canvasPage'
       var canvasWrapperId = 'canvasWrapperId' //最后确定框图
       $('body').append('<canvas id='+ canvasId+' width='+ canvas.width +' height='+ canvas.height +'></canvas>') //添加图层用来画选择框
       $(canvas).addClass('copy-body') //html转化来的canvas图片作为背景
       $('#' + canvasId).mousedown(function(e) {
-        layerName += 1
-        startX = that._calculateXY(e).x
-        startY = that._calculateXY(e).y
-        isShot = true
-        $("#"+canvasId).addLayer({
-                   type: 'rectangle',
-                   strokeStyle: color,
-                   strokeWidth: penWidth,
-                   fillStyle: bGcolor,
-                    name:layerName,
-                    fromCenter: false,
-                    x: startX,
-                    y: startY,
-                    width: 1,
-                    height: 1
-        })
+          $('.result').remove()
+          $("#"+canvasId).removeLayer(layerName)
+          layerName += 1
+          startX = that._calculateXY(e).x
+          startY = that._calculateXY(e).y
+          isShot = true
+          $("#"+canvasId).addLayer({
+                     type: 'rectangle',
+                     strokeStyle: color,
+                     strokeWidth: penWidth,
+                     fillStyle: bGcolor,
+                      name:layerName,
+                      fromCenter: false,
+                      x: startX,
+                      y: startY,
+                      width: 1,
+                      height: 1
+          })
       }).mousemove(function(e) {
         if(isShot) {
           $("#"+canvasId).removeLayer(layerName)
@@ -109,13 +123,23 @@ $('#shot').click(function() {
                       })
           $("#"+canvasId).drawLayers();
         }
-
       }).mouseup(function(e) {
         var moveX = that._calculateXY(e).x
         var moveY = that._calculateXY(e).y
         var width = moveX - startX
         var height = moveY - startY
         isShot = false
+        $('body').append('<div class="result"><span class="ok">确定</span></div>')
+        $('.result').css({
+          'top': moveY + 10,
+          'left': moveX - 64
+        })
+        $('.ok').click(function() {
+          $(canvas).remove()
+          $("#"+canvasId).remove()
+          $('.result').remove()
+          $('body').css('cursor', 'default')
+        })
       })
     }
   })
