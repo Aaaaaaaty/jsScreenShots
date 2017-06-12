@@ -40,7 +40,7 @@
         z-index: 4;
         cursor: pointer;
       }
-      .result span {
+      .result a {
         padding: 5px 15px;
         border: 1px solid;
         border-radius: 12px;
@@ -63,7 +63,24 @@
 <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
 <script src="https://cdn.bootcss.com/jcanvas/16.7.3/jcanvas.min.js"></script>
 <script type="text/javascript" src="./html2canvas.js"></script>
-<script type="text/javascript">
+<script type="text/javascript"> //16 65
+/**
+* @param {Array} quickStartKey 开始截图快捷键keyCode
+* @param {Number} EndKey 结束截图快捷键keyCode
+*/
+function screenShot(quickStartKey, EndKey) {
+  //兼容性考虑不使用...扩展字符串
+  var
+  quickStartKey.forEach(function(item) {
+
+  })
+}
+function downloadFile(el, fileName, href){
+    el.attr({
+      'download':fileName,
+      'href': href
+    })
+}
 $('#shot').click(function() {
   $('body').css('cursor', 'crosshair')
   html2canvas(document.body, {
@@ -133,18 +150,18 @@ $('#shot').click(function() {
         var width = moveX - startX
         var height = moveY - startY
         isShot = false
-        $('body').append('<div class="result"><span class="ok">确定</span></div>')
+        $('body').append('<div class="result"><a class="ok">确定</a></div>')
         $('.result').css({
           'top': moveY + 10,
           'left': moveX - 64
         })
         $('.ok').click(function() {
-          $('body').append('<canvas id="canvasResult" width='+ width +' height='+ height +'></canvas>') //添加图层用来画选择框
+          $('body').append('<canvas id="canvasResult" width='+ width +' height='+ height +' style="display:none"></canvas>') //添加图层用来画选择框
           var canvasResult = document.getElementById('canvasResult')
           var ctx = canvasResult.getContext("2d");
           ctx.drawImage(canvas, startX, startY, width, height, 0, 0, width, height )
-          var dataURL = canvasResult.toDataURL();
-          console.log(dataURL);
+          var dataURL = canvasResult.toDataURL("image/png");
+          downloadFile($('.ok'), 'screenShot' + Math.random().toString().split('.')[1] || Math.random()  + '.png', dataURL)
           $(canvas).remove()
           $("#"+canvasId).remove()
           $('.result').remove()
